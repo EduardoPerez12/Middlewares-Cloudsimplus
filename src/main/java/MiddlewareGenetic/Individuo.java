@@ -29,8 +29,8 @@ public class Individuo{
             return this.fitness;
         }
 	
-	public Individuo(ArrayList<Cromosoma> individuosList){
-		this.cromosomaList=individuosList;		
+	public Individuo(ArrayList<Cromosoma> cromosomaList){
+		this.cromosomaList=cromosomaList;		
 	}
 	
 	public ArrayList<Cromosoma> getCromosomasList(){

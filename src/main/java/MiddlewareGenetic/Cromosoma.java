@@ -38,6 +38,11 @@ public class Cromosoma {
 	{
 		return this.vm;
 	}
+        
+        public void setCloudletList(ArrayList<Cloudlet> list)
+        {
+            this.cloudletList = list;
+        }
 	public void addCloudletForCromosoma(Cloudlet cl)
 	{
 		this.cloudletList.add(cl);

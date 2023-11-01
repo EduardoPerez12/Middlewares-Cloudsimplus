@@ -108,9 +108,52 @@ public class genetic1 {
 
             double rangeMax = 1.0f;
             Random r = new Random();
+            
+            //MUTACIÓN
+            double mutationProb = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+            if(mutationProb <= 0.3)
+            {
+                int ind1=(int)(Math.random() * (num_vm-1));
+                int ind2=(int)(Math.random() * (num_vm-1));
+                
+                int ind3=(int)(Math.random() * (num_vm-1));
+                int ind4=(int)(Math.random() * (num_vm-1));
+                
+                //Se intercambian las cloudlest lists de los cromosomas
+                Cromosoma cromo1 = l1.get(ind1);
+                Cromosoma cromo2 = l1.get(ind2);
+                
+                ArrayList<Cloudlet> cloudListAux = cromo1.getCloudletListFromCromosoma();
+                cromo1.setCloudletList(cromo2.getCloudletListFromCromosoma());
+                cromo2.setCloudletList(cloudListAux);
+                
+                //Se devuelven a la lista
+                l1.set(ind1, cromo1);
+                l1.set(ind2, cromo2);
+                
+                
+                //Se intercambian las cloudlest lists de los cromosomas
+                Cromosoma cromo3 = l2.get(ind3);
+                Cromosoma cromo4 = l2.get(ind4);
+                
+                cloudListAux = cromo3.getCloudletListFromCromosoma();
+                cromo3.setCloudletList(cromo4.getCloudletListFromCromosoma());
+                cromo4.setCloudletList(cloudListAux);
+                
+                //Se devuelven a la lista
+                l2.set(ind3, cromo3);
+                l2.set(ind4, cromo4);
+                
+                //Se devuelven las listas a la poblacion para guardar los cambios en los padres
+                population.set(0,new Individuo(l1));
+               population.set(1,new Individuo(l2)); 
+                
+            }
+            
+            //CRUCE
             double crossProb = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
             //en caso de que la probabilidad calculada de manera random sea menor a 0.5 se realiza crossover de invdividuos random
-            if(crossProb<0.7)
+            if(crossProb <= 0.7)
             {   
                 int separationIndex = (int) Math.floor(num_vm/2);
                 
@@ -127,6 +170,7 @@ public class genetic1 {
                 population.add(hijo2);
                                 
             }
+            
             this.setFitness(population, num_vm);
             population = new ArrayList<Individuo>(population.subList(0, 20));
         }
