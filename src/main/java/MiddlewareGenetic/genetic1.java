@@ -78,7 +78,7 @@ public class genetic1 {
             }
             
             for (int k=0; k<num_cloudlet; k++){
-                int rndIndex = (int)Math.floor(Math.random() * (vmList.size()-1));
+                int rndIndex = (int)(Math.random() * (vmList.size()-1));
                 firstIndividuo.get(rndIndex).addCloudletForCromosoma(cloudletList.get(k));
             }
             
@@ -88,89 +88,111 @@ public class genetic1 {
 
         this.setFitness(population, num_vm);
         
-        int generation=40;
+        int generation=20;
         int populationSize=population.size();
         Random random = new Random();
         // Running the algorithm for 20 generations
         for(int count=0;count<=generation;count++){
+            //for(int g =0;g < (population.size())/2;g=g+2){
+            
+                int index1,index2;
+                index1=0;
+                index2=1;
+                ArrayList<Cromosoma> l1= new ArrayList<Cromosoma>();
+                l1=population.get(index1).getCromosomasList();
+                Individuo hijo1 = new Individuo(l1);
+                ArrayList<Cromosoma> l2= new ArrayList<Cromosoma>();
+                l2=population.get(index2).getCromosomasList();
+                Individuo hijo2 = new Individuo(l2);
+                double rangeMin = 0.0f;
+                
+                double rangeMax = 1.0f;
+                Random r = new Random();
+                
+                //MUTACIÓN
+                /*double mutationProb = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+                if(mutationProb <= 0.3)
+                {
+                    int ind1=(int)(Math.random() * (num_vm-1));
+                    int ind2=(int)(Math.random() * (num_vm-1));
+                    
+                    int ind3=(int)(Math.random() * (num_vm-1));
+                    int ind4=(int)(Math.random() * (num_vm-1));
+                    
+                    //Se intercambian las cloudlest lists de los cromosomas
+                    Cromosoma cromo1 = l1.get(ind1);
+                    Cromosoma cromo2 = l1.get(ind2);
+                    
+                    ArrayList<Cloudlet> cloudListAux = cromo1.getCloudletListFromCromosoma();
+                    cromo1.setCloudletList(cromo2.getCloudletListFromCromosoma());
+                    cromo2.setCloudletList(cloudListAux);
+                
+                    //Se devuelven a la lista
+                    l1.set(ind1, cromo1);
+                    l1.set(ind2, cromo2);
+                    
+                    
+                    //Se intercambian las cloudlest lists de los cromosomas
+                    Cromosoma cromo3 = l2.get(ind3);
+                    Cromosoma cromo4 = l2.get(ind4);
+                    
+                    cloudListAux = cromo3.getCloudletListFromCromosoma();
+                    cromo3.setCloudletList(cromo4.getCloudletListFromCromosoma());
+                    cromo4.setCloudletList(cloudListAux);
+                    
+                    //Se devuelven a la lista
+                    l2.set(ind3, cromo3);
+                    l2.set(ind4, cromo4);
+                    
+                    //Se devuelven las listas a la poblacion para guardar los cambios en los padres
+                    population.set(0,new Individuo(l1));
+                    population.set(1,new Individuo(l2)); 
+                
+                }*/
+            
+                //CRUCE
+                double crossProb = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+                //en caso de que la probabilidad calculada de manera random sea menor a 0.5 se realiza crossover de invdividuos random
+                if(crossProb <= 0.7)
+                {   
+                    int separationIndex = (int)(num_cloudlet/2);
+                    int vm_index1;
+                    int vm_index2;
+                    Individuo parent1 = population.get(index1);
+                    Individuo parent2 = population.get(index1);
+                    
+                    ArrayList<Cromosoma> listHijo1 =  hijo1.getCromosomasList();
+                    ArrayList<Cromosoma> listHijo2 =  hijo2.getCromosomasList();
+                            
+                    for (int j = 0; j < num_vm;j++){
+                        hijo1.updateCromosoma(j, vmList.get(j));
+                        hijo2.updateCromosoma(j, vmList.get(j));
+                    }
+                    
+                    for(int i = 0; i < separationIndex; i++){
+                        vm_index1 = parent1.findCloudlet(cloudletList.get(i));
+                        vm_index2 = parent2.findCloudlet(cloudletList.get(i));
                         
-            //se toman dos individuos de manera random
-            int index1,index2;
-            index1=0;
-            index2=1;
-            ArrayList<Cromosoma> l1= new ArrayList<Cromosoma>();
-            l1=population.get(index1).getCromosomasList();
-            Individuo hijo1 = new Individuo(l1);
-            ArrayList<Cromosoma> l2= new ArrayList<Cromosoma>();
-            l2=population.get(index2).getCromosomasList();
-            Individuo hijo2 = new Individuo(l2);
-            double rangeMin = 0.0f;
-
-            double rangeMax = 1.0f;
-            Random r = new Random();
-            
-            //MUTACIÓN
-            double mutationProb = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
-            if(mutationProb <= 0.3)
-            {
-                int ind1=(int)(Math.random() * (num_vm-1));
-                int ind2=(int)(Math.random() * (num_vm-1));
+                        listHijo1.get(vm_index1).addCloudletForCromosoma(cloudletList.get(i));
+                        listHijo2.get(vm_index2).addCloudletForCromosoma(cloudletList.get(i));
+                    }
+                    
+                    for(int k = separationIndex; k < num_cloudlet; k++){
+                        vm_index1 = parent1.findCloudlet(cloudletList.get(k));
+                        vm_index2 = parent2.findCloudlet(cloudletList.get(k));
+                        
+                        listHijo1.get(vm_index1).addCloudletForCromosoma(cloudletList.get(k));
+                        listHijo2.get(vm_index2).addCloudletForCromosoma(cloudletList.get(k));
+                    }
+                    
+                    hijo1 = new Individuo(listHijo1);
+                    hijo2 = new Individuo(listHijo2);
+                    
+                    population.add(hijo1);
+                    population.add(hijo2);                
+                }
+            //}
                 
-                int ind3=(int)(Math.random() * (num_vm-1));
-                int ind4=(int)(Math.random() * (num_vm-1));
-                
-                //Se intercambian las cloudlest lists de los cromosomas
-                Cromosoma cromo1 = l1.get(ind1);
-                Cromosoma cromo2 = l1.get(ind2);
-                
-                ArrayList<Cloudlet> cloudListAux = cromo1.getCloudletListFromCromosoma();
-                cromo1.setCloudletList(cromo2.getCloudletListFromCromosoma());
-                cromo2.setCloudletList(cloudListAux);
-                
-                //Se devuelven a la lista
-                l1.set(ind1, cromo1);
-                l1.set(ind2, cromo2);
-                
-                
-                //Se intercambian las cloudlest lists de los cromosomas
-                Cromosoma cromo3 = l2.get(ind3);
-                Cromosoma cromo4 = l2.get(ind4);
-                
-                cloudListAux = cromo3.getCloudletListFromCromosoma();
-                cromo3.setCloudletList(cromo4.getCloudletListFromCromosoma());
-                cromo4.setCloudletList(cloudListAux);
-                
-                //Se devuelven a la lista
-                l2.set(ind3, cromo3);
-                l2.set(ind4, cromo4);
-                
-                //Se devuelven las listas a la poblacion para guardar los cambios en los padres
-                population.set(0,new Individuo(l1));
-               population.set(1,new Individuo(l2)); 
-                
-            }
-            
-            //CRUCE
-            double crossProb = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
-            //en caso de que la probabilidad calculada de manera random sea menor a 0.5 se realiza crossover de invdividuos random
-            if(crossProb <= 0.7)
-            {   
-                int separationIndex = (int) Math.floor(num_vm/2);
-                
-                ArrayList<Cromosoma> subList1 = new ArrayList<Cromosoma>(l1.subList(0, separationIndex));
-                ArrayList<Cromosoma> subList2 = new ArrayList<Cromosoma>(l2.subList(separationIndex, num_vm));
-                ArrayList<Cromosoma> subList3 = new ArrayList<Cromosoma>(l2.subList(0, separationIndex));
-                ArrayList<Cromosoma> subList4 = new ArrayList<Cromosoma>(l1.subList(separationIndex, num_vm));
-                
-                subList1.addAll(subList2);
-                subList3.addAll(subList4);
-                hijo1.setCromosomas(subList1);
-                hijo2.setCromosomas(subList3);
-                population.add(hijo1);
-                population.add(hijo2);
-                                
-            }
-            
             this.setFitness(population, num_vm);
             population = new ArrayList<Individuo>(population.subList(0, 20));
         }
@@ -186,6 +208,7 @@ public class genetic1 {
 
 
         //se toman las cloudlet y vms. Se asigna cada Cloudlet a su respectiva Vm
+        int o = 0;
         for(int i=0;i<result.size();i++)
         {            
             Vm vm=result.get(i).getVmFromCromosoma();
@@ -195,6 +218,7 @@ public class genetic1 {
                 Cloudlet cloudlet=result.get(i).getCloudletListFromCromosoma().get(x);
                 cloudlet.setVm(vm);
                 finalcloudletList.add(cloudlet); 
+                o = o + 1;
             }
         }
         
@@ -210,6 +234,8 @@ public class genetic1 {
 
         final var cloudletFinishedList = broker0.getCloudletFinishedList();
         new CloudletsTableBuilder(cloudletFinishedList).build();
+        
+        System.out.println(o);
     }
     
     private void setFitness(ArrayList<Individuo> population, int num_vm){

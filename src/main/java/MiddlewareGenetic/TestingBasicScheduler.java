@@ -62,10 +62,10 @@ public class TestingBasicScheduler {
     private static final long HOST_BW = 10_000; //in Megabits/s
     private static final long HOST_STORAGE = 1_000_000; //in Megabytes
 
-    private static final int VMS = 20;
+    private static final int VMS = 100;
     private static final int VM_PES = 4;
 
-    private static final int CLOUDLETS = 100;
+    private static final int CLOUDLETS = 500;
 
     private final CloudSimPlus simulation;
     private final DatacenterBrokerSimple broker0;
